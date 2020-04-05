@@ -23,8 +23,27 @@ describe('ONG', () => {
         });     
     
         expect(response.body).toHaveProperty('id'); 
-        // expect(response.body.id).toHaveLength('8'); 
-    });    
+        expect(response.body.id).toHaveLength(8); 
+    });  
+    
+    it('should be able to list existents ONG', async () => {
+        //create 
+        const ong = await request(app).post('/ongs')
+        .send({
+            name:"APAD2", 
+            email:"contato@contato.com", 
+            whatsapp:"1100000000", 
+            city:"sao paulo", 
+            uf:"SP"
+        });     
+
+        const response = await request(app).get('/ongs');
+        expect(response.body.name).toEqual(ong.name); 
+        expect(response.body.email).toEqual(ong.email); 
+        expect(response.body.whatsapp).toEqual(ong.whatsapp); 
+        expect(response.body.city).toEqual(ong.city); 
+        expect(response.body.uf).toEqual(ong.uf); 
+    });
 });
 
-//finalizar os testes para ongs
+//pedente testas delete

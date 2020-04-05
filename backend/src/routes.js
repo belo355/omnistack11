@@ -7,10 +7,12 @@ const IncidentsController = require('./controllers/IncidentsController');
 const ProfileController = require('./controllers/ProfileController'); 
 const SessionController = require('./controllers/SessionController'); 
 
-//todo: fazer validação 
-routes.post('/sessions', SessionController.create); 
+routes.post('/sessions', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        id: Joi.string().required().min(8), 
+    }) 
+}) , SessionController.create); 
 
-//todo: fazer validação 
 routes.get('/ongs', OngController.index);
 
 routes.post('/ongs', celebrate({
@@ -23,8 +25,11 @@ routes.post('/ongs', celebrate({
     }) 
 }), OngController.create); 
 
-//todo: fazer validação 
-routes.post('/ongs/delete/:id', OngController.delete); 
+routes.post('/ongs/delete/:id',celebrate({
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(), 
+    }).unknown(),   
+}),  OngController.delete); 
 
 routes.get('/profile', celebrate({
     [Segments.HEADERS]: Joi.object({
@@ -38,8 +43,16 @@ routes.get('/incidents',celebrate({
     }), 
 }),IncidentsController.index)
 
-//todo: fazer validação 
-routes.post('/incidents', IncidentsController.create); 
+routes.post('/incidents',celebrate({
+    [Segments.BODY]:Joi.object().keys({
+        title: Joi.string().required(), 
+        description:Joi.string().required(), 
+        value:Joi.number().required(), 
+    }), 
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().min(8), 
+    }).unknown(), 
+}),  IncidentsController.create); 
 
 
 routes.delete('/incidents/:id', celebrate({
